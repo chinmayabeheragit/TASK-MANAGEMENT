@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const authRoutes = require('../src/routers/authRoutes')
 const taskRoutes = require('../src/routers/tasksRoutes')
 const projectRoutes = require('../src/routers/projectRoutes');
+const teamsRoutes = require('../src/routers/teamsRoutes')
 
 require("dotenv").config({ path: "./config/dev.env" });
 require("./db/mongoose")
@@ -27,6 +28,7 @@ const PORT = process.env.PORT;
 app.use('/api/auth', authRoutes)
 app.use('/api',taskRoutes)
 app.use('/project',projectRoutes)
+app.use('/Teams',teamsRoutes)
 
 
 app.get('/', (req,res) => {
