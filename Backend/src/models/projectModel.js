@@ -16,14 +16,14 @@ const projectSchema = new mongoose.Schema(
             trim: true,
         },
         onboardTime: {
-            type: String, // Store date and time as a string
+            type: String, 
         },
         deadline: {
-            type: String, // Store date and time as a string
+            type: String, 
         },
     },
     {
-        timestamps: true, // Automatically adds createdAt and updatedAt
+        timestamps: true, 
     }
 );
 

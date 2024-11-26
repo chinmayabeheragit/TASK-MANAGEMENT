@@ -34,7 +34,7 @@ module.exports = function (app) {
     swaggerOptions: {
       validatorUrl: null,
     },
-    customSiteTitle: "Swagger - ABASKO LMS STUDENT",
+    customSiteTitle: "TASK MANAGEMENT",
   };
   swaggerSpec = swaggerJSDoc(options);
   app.use(
