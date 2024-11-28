@@ -1,0 +1,14 @@
+/* src/styles/login.css */
+@keyframes gradientAnimation {
+    0% {
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+    100% {
+      background-color: rgba(0, 0, 0, 0.2);
+    }
+  }
+  
+  body {
+    animation: gradientAnimation 5s ease-in-out infinite;
+  }
+  
