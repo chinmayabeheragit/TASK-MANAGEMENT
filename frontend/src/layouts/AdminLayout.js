@@ -1,7 +1,15 @@
 import React from "react";
 import Sidebar from "../components/Slidebar";
+import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
 
 const AdminLayout = ({ children }) => {
+  const navigate = useNavigate();
+
+  // Function to navigate to the profile page
+  const handleProfileClick = () => {
+    navigate("/admin/profile");
+  };
+
   return (
     <div className="flex">
       <Sidebar />
@@ -10,9 +18,10 @@ const AdminLayout = ({ children }) => {
           <h1 className="text-xl font-semibold">Admin Dashboard</h1>
           <div className="relative">
             <img
-              src="/path/to/profile/icon.png"
+              src="/path/to/profile/icon.png" // Replace with your actual profile icon path
               alt="Profile"
               className="w-8 h-8 rounded-full cursor-pointer"
+              onClick={handleProfileClick} // Navigate to the profile page
             />
           </div>
         </header>

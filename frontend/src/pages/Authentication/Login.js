@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { TextField, Button, Typography } from "@mui/material";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
@@ -8,18 +7,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-/*************  ✨ Codeium Command ⭐  *************/
-/**
- * Handles the login process for users.
- * If the entered credentials match the hardcoded admin credentials,
- * the user is redirected to the admin dashboard. Otherwise, an API
- * call is made to authenticate the user and, upon success, the user
- * is redirected to the user dashboard. Displays an alert in case of
- * a login failure.
- *
- * @param {Object} e - The event object from the form submission.
- */
-/******  a3bb3f6b-3f58-40fb-85d2-e0bb7dafff0d  *******/  const handleLogin = async (e) => {
+  const handleLogin = (e) => {
     e.preventDefault();
 
     // Hardcoded admin credentials
@@ -30,22 +18,12 @@ const Login = () => {
       // Set a dummy token for the admin
       localStorage.setItem("authToken", "adminToken");
       navigate("/admin/dashboard"); // Redirect to admin dashboard
-      return;
-    }
-
-    try {
-      // Proceed with the API call for non-admin login
-      const response = await axios.post("/api/auth/login", { email, password });
-
-      // Assume the API returns a token on successful login
-      const { token } = response.data;
-
-      // Store the token in localStorage
-      localStorage.setItem("authToken", token);
-
+    } else if (email && password) {
+      // For now, assume any other email/password combination is valid for user login
+      localStorage.setItem("authToken", "userToken");
       navigate("/user/dashboard"); // Redirect to user dashboard
-    } catch (error) {
-      alert("Login failed! Please try again.");
+    } else {
+      alert("Please enter valid credentials!");
     }
   };
 
