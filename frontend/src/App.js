@@ -5,6 +5,7 @@ import Register from "./pages/Authentication/Register";
 import ForgotPassword from "./pages/Authentication/ForgetPassword";
 import AdminDashboard from "./pages/Admin/Dashboard";
 import UserDashboard from "./pages/User/Dashboard";
+import AdminProfile from "./pages/Admin/Profile";
 import ProtectedRoute from "./routes/ProtectedRoute";
 
 const App = () => {
@@ -35,6 +36,14 @@ const App = () => {
           element={
             <ProtectedRoute>
               <UserDashboard />
+            </ProtectedRoute>
+          }
+        />
+                <Route
+          path="/admin/profile"
+          element={
+            <ProtectedRoute>
+              <AdminProfile />
             </ProtectedRoute>
           }
         />
