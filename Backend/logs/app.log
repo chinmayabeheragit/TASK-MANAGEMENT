@@ -101,3 +101,9 @@
 2024-11-24T07:40:15.899Z error: No stack trace
 2024-11-24T07:41:04.269Z error: No stack trace
 2024-11-26T13:25:34.318Z error: No stack trace
+2024-11-27T14:51:20.381Z error: Error: Incorrect email or password.
+    at Object.loginUser (D:\portfolio project\TASK-MANAGEMENT\Backend\src\services\authService.js:79:15)
+    at async loginUser (D:\portfolio project\TASK-MANAGEMENT\Backend\src\controllers\authController.js:71:33)
+2024-11-27T14:51:22.455Z error: Error: Incorrect email or password.
+    at Object.loginUser (D:\portfolio project\TASK-MANAGEMENT\Backend\src\services\authService.js:79:15)
+    at async loginUser (D:\portfolio project\TASK-MANAGEMENT\Backend\src\controllers\authController.js:71:33)
