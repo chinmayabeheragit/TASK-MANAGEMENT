@@ -7,7 +7,7 @@ const taskRoutes = require('../src/routers/tasksRoutes')
 const projectRoutes = require('../src/routers/projectRoutes');
 const teamsRoutes = require('../src/routers/teamsRoutes')
 
-require("dotenv").config({ path: "./config/dev.env" });
+require("dotenv").config({ path: "./config/.env" });
 require("./db/mongoose")
 // const contextPath = "/rest/api";
 const app = express();
