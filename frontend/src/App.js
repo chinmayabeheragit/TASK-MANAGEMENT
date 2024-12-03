@@ -7,6 +7,7 @@ import AdminDashboard from "./pages/Admin/Dashboard";
 import UserDashboard from "./pages/User/Dashboard";
 import AdminProfile from "./pages/Admin/Profile";
 import AdminProject from "./pages/Admin/Project";
+import AdminTask from "./pages/Admin/Task";
 import ProtectedRoute from "./routes/ProtectedRoute";
 
 const App = () => {
@@ -53,6 +54,14 @@ const App = () => {
           element={
             <ProtectedRoute>
               <AdminProject />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/tasks"
+          element={
+            <ProtectedRoute>
+              <AdminTask />
             </ProtectedRoute>
           }
         />
