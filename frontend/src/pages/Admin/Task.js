@@ -8,7 +8,9 @@ import {
   DialogContent,
   DialogActions,
   Typography,
+  Autocomplete,
 } from "@mui/material";
+import { Delete, Notifications, Edit } from "@mui/icons-material";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import { Link } from "react-router-dom";
 
@@ -20,21 +22,26 @@ const statuses = [
   { value: "NotCompleted", color: "bg-red-200 text-red-800" },
 ];
 
+const priorities = ["High", "Medium", "Low"];
+const projects = ["Project A", "Project B", "Project C"];
+const teams = ["Team X", "Team Y", "Team Z"];
+const users = ["Alice", "Bob", "Charlie", "David"];
+
 const TaskPage = () => {
   const [tasks, setTasks] = useState([]);
   const [taskFormOpen, setTaskFormOpen] = useState(false);
+  const [editTaskId, setEditTaskId] = useState(null); // New State for editing
   const [newTask, setNewTask] = useState({
     taskName: "",
-    projectName: "",
-    teamName: "",
-    assignTo: "",
-    status: "",
-    priority: "",
+    description: "", // Added description field
     startDate: "",
     endDate: "",
-    description: "",
-    techStack: "",
-    attachments: "",
+    projectName: "",
+    teamName: "",
+    assignTo: [],
+    status: "",
+    priority: "",
+    attachments: null,
   });
 
   const handleInputChange = (e) => {
@@ -42,59 +49,143 @@ const TaskPage = () => {
     setNewTask({ ...newTask, [name]: value });
   };
 
-  const handleCreateTask = () => {
-    setTasks([...tasks, { ...newTask, id: Date.now() }]);
+  const handleCreateOrUpdateTask = () => {
+    if (editTaskId) {
+      // Update Task
+      setTasks(
+        tasks.map((task) =>
+          task.id === editTaskId ? { ...task, ...newTask } : task
+        )
+      );
+      alert("Task updated successfully!");
+    } else {
+      // Create New Task
+      setTasks([...tasks, { ...newTask, id: Date.now() }]);
+    }
+    resetTaskForm();
+  };
+
+  const handleEditTask = (task) => {
+    setEditTaskId(task.id);
+    setNewTask(task);
+    setTaskFormOpen(true);
+  };
+
+  const resetTaskForm = () => {
+    setEditTaskId(null);
     setNewTask({
       taskName: "",
-      projectName: "",
-      teamName: "",
-      assignTo: "",
-      status: "",
-      priority: "",
+      description: "",
       startDate: "",
       endDate: "",
-      description: "",
-      techStack: "",
-      attachments: "",
+      projectName: "",
+      teamName: "",
+      assignTo: [],
+      status: "",
+      priority: "",
+      attachments: null,
     });
     setTaskFormOpen(false);
   };
 
+  const handleDeleteTask = (id) => {
+    setTasks(tasks.filter((task) => task.id !== id));
+    alert("Task moved to trash!");
+  };
+
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
+    <div className="p-6 bg-gradient-to-r from-gray-100 via-gray-200 to-gray-300 min-h-screen">
+      {/* Header Section */}
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Task Management</h1>
-        <Link to="/admin/dashboard" className="flex items-center text-black hover:text-yellow-300">
+        <h1 className="text-3xl font-bold text-gray-800">Task Management</h1>
+        <Link
+          to="/admin/dashboard"
+          className="flex items-center text-gray-700 hover:text-yellow-500"
+        >
           <Button
             variant="outlined"
             startIcon={<DashboardIcon />}
-            className="text-black border-black hover:border-yellow-300 hover:text-yellow-300"
+            className="text-gray-800 border-gray-800 hover:border-yellow-500 hover:text-yellow-500"
           >
             Dashboard
           </Button>
         </Link>
       </div>
+
+      {/* Create Task Button */}
       <Button
         variant="contained"
         color="primary"
+        className="bg-blue-500 hover:bg-blue-600"
         onClick={() => setTaskFormOpen(true)}
       >
         Create Task
       </Button>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
+
+      {/* Task Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
         {tasks.map((task) => (
-          <TaskCard
+          <div
             key={task.id}
-            task={task}
-            statuses={statuses}
-            onDelete={(id) => setTasks(tasks.filter((t) => t.id !== id))}
-          />
+            className="border p-4 rounded-lg shadow-lg bg-white"
+          >
+            <Typography variant="h6" className="font-bold text-gray-800">
+              {task.taskName}
+            </Typography>
+            <p className="text-sm text-gray-600">{task.description}</p>
+            <p className="text-sm text-gray-600">
+              {task.startDate} - {task.endDate}
+            </p>
+            <p
+              className={`text-sm ${
+                statuses.find((s) => s.value === task.status)?.color
+              }`}
+            >
+              {task.status}
+            </p>
+            <p className="text-sm text-gray-700">Priority: {task.priority}</p>
+            <p className="text-sm text-gray-600">Project: {task.projectName}</p>
+            <p className="text-sm text-gray-600">Team: {task.teamName}</p>
+            <p className="text-sm text-gray-600">
+              Assigned To: {task.assignTo.join(", ")}
+            </p>
+            <div className="flex space-x-3 mt-4">
+              <Button
+                variant="outlined"
+                startIcon={<Edit />}
+                className="text-green-500 border-green-500"
+                onClick={() => handleEditTask(task)}
+              >
+                Update
+              </Button>
+              <Button
+                variant="outlined"
+                startIcon={<Delete />}
+                className="text-red-500 border-red-500"
+                onClick={() => handleDeleteTask(task.id)}
+              >
+                Delete
+              </Button>
+              <Button
+                variant="contained"
+                startIcon={<Notifications />}
+                className="bg-yellow-500 hover:bg-yellow-600"
+              >
+                Reminder
+              </Button>
+            </div>
+          </div>
         ))}
       </div>
 
-      {/* Task Creation Form */}
-      <Dialog open={taskFormOpen} onClose={() => setTaskFormOpen(false)} fullWidth maxWidth="sm">
-        <DialogTitle>Create Task</DialogTitle>
+      {/* Task Creation/Update Dialog */}
+      <Dialog
+        open={taskFormOpen}
+        onClose={resetTaskForm}
+        fullWidth
+        maxWidth="sm"
+      >
+        <DialogTitle>{editTaskId ? "Update Task" : "Create Task"}</DialogTitle>
         <DialogContent>
           <div className="space-y-4">
             <TextField
@@ -105,6 +196,33 @@ const TaskPage = () => {
               onChange={handleInputChange}
             />
             <TextField
+              label="Description"
+              name="description"
+              fullWidth
+              multiline
+              rows={4}
+              value={newTask.description}
+              onChange={handleInputChange}
+            />
+            <TextField
+              label="Start Date"
+              name="startDate"
+              type="date"
+              fullWidth
+              InputLabelProps={{ shrink: true }}
+              value={newTask.startDate}
+              onChange={handleInputChange}
+            />
+            <TextField
+              label="End Date"
+              name="endDate"
+              type="date"
+              fullWidth
+              InputLabelProps={{ shrink: true }}
+              value={newTask.endDate}
+              onChange={handleInputChange}
+            />
+            <TextField
               label="Project Name"
               name="projectName"
               select
@@ -112,8 +230,11 @@ const TaskPage = () => {
               value={newTask.projectName}
               onChange={handleInputChange}
             >
-              <MenuItem value="Project A">Project A</MenuItem>
-              <MenuItem value="Project B">Project B</MenuItem>
+              {projects.map((project) => (
+                <MenuItem key={project} value={project}>
+                  {project}
+                </MenuItem>
+              ))}
             </TextField>
             <TextField
               label="Team Name"
@@ -123,15 +244,20 @@ const TaskPage = () => {
               value={newTask.teamName}
               onChange={handleInputChange}
             >
-              <MenuItem value="Team X">Team X</MenuItem>
-              <MenuItem value="Team Y">Team Y</MenuItem>
+              {teams.map((team) => (
+                <MenuItem key={team} value={team}>
+                  {team}
+                </MenuItem>
+              ))}
             </TextField>
-            <TextField
-              label="Assign To"
-              name="assignTo"
-              fullWidth
+            <Autocomplete
+              multiple
+              options={users}
               value={newTask.assignTo}
-              onChange={handleInputChange}
+              onChange={(e, value) => setNewTask({ ...newTask, assignTo: value })}
+              renderInput={(params) => (
+                <TextField {...params} label="Assign To" fullWidth />
+              )}
             />
             <TextField
               label="Status"
@@ -155,101 +281,37 @@ const TaskPage = () => {
               value={newTask.priority}
               onChange={handleInputChange}
             >
-              <MenuItem value="High">High</MenuItem>
-              <MenuItem value="Medium">Medium</MenuItem>
-              <MenuItem value="Low">Low</MenuItem>
+              {priorities.map((priority) => (
+                <MenuItem key={priority} value={priority}>
+                  {priority}
+                </MenuItem>
+              ))}
             </TextField>
-            <TextField
-              label="Start Date"
-              name="startDate"
-              type="date"
-              fullWidth
-              InputLabelProps={{ shrink: true }}
-              value={newTask.startDate}
-              onChange={handleInputChange}
-            />
-            <TextField
-              label="End Date"
-              name="endDate"
-              type="date"
-              fullWidth
-              InputLabelProps={{ shrink: true }}
-              value={newTask.endDate}
-              onChange={handleInputChange}
-            />
-            <TextField
-              label="Description"
-              name="description"
-              multiline
-              rows={3}
-              fullWidth
-              value={newTask.description}
-              onChange={handleInputChange}
-            />
-            <TextField
-              label="Tech Stack"
-              name="techStack"
-              fullWidth
-              value={newTask.techStack}
-              onChange={handleInputChange}
-            />
             <TextField
               label="Attachments"
               name="attachments"
+              type="file"
               fullWidth
-              value={newTask.attachments}
-              onChange={handleInputChange}
+              InputLabelProps={{ shrink: true }}
+              onChange={(e) =>
+                setNewTask({ ...newTask, attachments: e.target.files[0] })
+              }
             />
           </div>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setTaskFormOpen(false)}>Cancel</Button>
-          <Button onClick={handleCreateTask} color="primary" variant="contained">
-            Save
+          <Button onClick={resetTaskForm} color="secondary">
+            Cancel
+          </Button>
+          <Button
+            onClick={handleCreateOrUpdateTask}
+            color="primary"
+            variant="contained"
+          >
+            {editTaskId ? "Update Task" : "Create Task"}
           </Button>
         </DialogActions>
       </Dialog>
-    </div>
-  );
-};
-
-const TaskCard = ({ task, onDelete, statuses }) => {
-  const [showMore, setShowMore] = useState(false);
-  const statusColor =
-    statuses.find((status) => status.value === task.status)?.color || "";
-
-  return (
-    <div className="border p-4 rounded-lg shadow bg-white">
-      <Typography variant="h6" className="mb-2">
-        {task.taskName}
-      </Typography>
-      <p className={`text-sm ${statusColor}`}>{task.status}</p>
-      <p className="text-sm text-gray-600">
-        {task.startDate} - {task.endDate}
-      </p>
-      <Button onClick={() => setShowMore(true)}>More</Button>
-      <Dialog open={showMore} onClose={() => setShowMore(false)}>
-        <DialogTitle>Task Details</DialogTitle>
-        <DialogContent>
-          <Typography variant="body2">{task.description}</Typography>
-          <Typography variant="body2">{task.techStack}</Typography>
-          <Typography variant="body2">{task.attachments}</Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setShowMore(false)}>Close</Button>
-        </DialogActions>
-      </Dialog>
-      <div className="flex space-x-2 mt-4">
-        <Button variant="outlined" color="primary">
-          Update
-        </Button>
-        <Button variant="outlined" color="secondary" onClick={() => onDelete(task.id)}>
-          Delete
-        </Button>
-        <Button variant="contained" color="warning">
-          Reminder
-        </Button>
-      </div>
     </div>
   );
 };

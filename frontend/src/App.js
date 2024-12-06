@@ -8,6 +8,9 @@ import UserDashboard from "./pages/User/Dashboard";
 import AdminProfile from "./pages/Admin/Profile";
 import AdminProject from "./pages/Admin/Project";
 import AdminTask from "./pages/Admin/Task";
+import AdminUserManagement from "./pages/Admin/UserManagement";
+import AdminCompletedTask from "./pages/Admin/CompletedTask";
+
 import ProtectedRoute from "./routes/ProtectedRoute";
 
 const App = () => {
@@ -62,6 +65,22 @@ const App = () => {
           element={
             <ProtectedRoute>
               <AdminTask />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/users"
+          element={
+            <ProtectedRoute>
+              <AdminUserManagement />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/completed-tasks"
+          element={
+            <ProtectedRoute>
+              <AdminCompletedTask />
             </ProtectedRoute>
           }
         />
